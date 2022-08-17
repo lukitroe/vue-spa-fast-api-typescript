@@ -12,14 +12,13 @@
     </p>
   </section>
 </template>
-<script>
 
-export default {
-  name: 'Home',
-  computed : {
-    isLoggedIn: function() {
-      return this.$store.getters.isAuthenticated;
-    }
-  },
-}
+<script setup lang="ts">
+import { computed } from "vue";
+import { useStore } from '../store/index';
+
+const store = useStore();
+
+const isLoggedIn = computed(() => store.getters.isAuthenticated);
+
 </script>

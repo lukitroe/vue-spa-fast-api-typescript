@@ -1,4 +1,6 @@
-import { createRouter, createWebHistory, RouteRecordRaw  } from 'vue-router';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+
+import { useStore } from '../store/index';
 
 import Home from '../views/Home.vue';
 import Register from '../views/Register.vue';
@@ -8,15 +10,26 @@ import Profile from '../views/Profile.vue';
 import Note from '../views/Note.vue';
 import EditNote from '../views/EditNote.vue';
 
-import { useStore } from '../store/index';
-
 const store = useStore();
 
-const routes: Array<RouteRecordRaw> = [
+interface RoutesType {
+  path: string;
+  name: string;
+  component: any;
+  meta?: {
+    index?: number;
+    keepAlive?: boolean;
+    requiresAuth?: boolean;
+  };
+  children?: RoutesType[];
+}
+
+
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: "Home",
-    component: Home,
+    component: Home
   },
   {
     path: '/register',
@@ -44,15 +57,13 @@ const routes: Array<RouteRecordRaw> = [
     path: '/note/:id',
     name: 'Note',
     component: Note,
-    meta: {requiresAuth: true},
-    props: true,
+    meta: {requiresAuth: true}
   },
   {
     path: '/note/:id',
     name: 'EditNote',
     component: EditNote,
-    meta: {requiresAuth: true},
-    props: true,
+    meta: {requiresAuth: true}
   }
 ]
 

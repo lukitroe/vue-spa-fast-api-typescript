@@ -20,10 +20,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useStore } from '../store/index';
-import router from '../router';
+import { useRouter, useRoute } from 'vue-router'
 import { UsersActionTypes } from '../store/modules/users/action-types';
 
 const store = useStore();
+
+const router = useRouter();
+// const route = useRoute();
 
 const username = ref('');
 const full_name = ref('');
@@ -36,7 +39,7 @@ async function submit() {
             "full_name": full_name.value,
             "password": password.value
         });
-        router.push('/dashboard');
+        router.push('Dashboard');
     } catch (error) {
         console.error('fetchDocuments', error);
     }

@@ -17,10 +17,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useStore } from '../store/index';
-import router from '../router';
+import {useRouter} from '../router/index';
 import { UsersActionTypes } from '../store/modules/users/action-types';
 
 const store = useStore();
+const router = useRouter();
 
 const username = ref('');
 const password = ref('');

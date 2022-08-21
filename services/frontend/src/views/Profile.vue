@@ -17,10 +17,11 @@
 import { computed, ref, ComputedRef } from "vue";
 import { useStore } from '../store/index';
 import { User } from '../@types';
-import router from '../router';
+import {useRouter} from '../router/index';
 import { UsersActionTypes } from '../store/modules/users/action-types';
 
 const store = useStore();
+const router = useRouter();
 
 const isAuth = computed(() => store.getters.isAuthenticated);
 

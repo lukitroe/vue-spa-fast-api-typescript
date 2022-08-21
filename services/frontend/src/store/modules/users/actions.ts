@@ -11,6 +11,7 @@ import { State } from './state';
 import { Mutations } from './mutations';
 import { UsersMutationTypes } from './mutation-types';
 import { UsersActionTypes } from './action-types';
+import { User } from '../../../@types';
 
 import axios from 'axios';
 
@@ -40,30 +41,39 @@ export const actions: ActionTree<State, RootState> & Actions = {
     return new Promise(() => {
       setTimeout(async () => {
         console.debug('REGISTER payload: ' + JSON.stringify(payload));
-        await axios.post('register', payload);
-        let Userdata = new FormData();
-        Userdata.append('username', payload.username);
-        Userdata.append('password', payload.password)
-        dispatch(UsersActionTypes.LOGIN, Userdata);
-      }, 1000);
+        await axios.post('register', payload).then((res) => {
+          let Userdata = new FormData();
+          Userdata.append('username', payload.username);
+          Userdata.append('password', payload.password)
+          dispatch(UsersActionTypes.LOGIN, Userdata);
+        });
+      }, 500);
+      console.debug("REGISTER done");
     });
   },
   async [UsersActionTypes.LOGIN]({ dispatch }: AugmentedActionContext, payload: any) {
     return new Promise(() => {
       setTimeout(async () => {
         console.debug('LOGIN payload: ' + JSON.stringify(payload));
-        await axios.post('login', payload);
-        dispatch(UsersActionTypes.VIEWME);
-      }, 1000);
+        await axios.post('login', payload).then((res) => {
+          dispatch(UsersActionTypes.VIEWME);
+        });
+      }, 500);
+      console.debug("LOGIN done");
     });
   },
   async [UsersActionTypes.VIEWME]({ commit }) {
     return new Promise(() => {
       setTimeout(async () => {
         console.debug('VIEWME');
-        let { data } = await axios.get('users/whoami');
-        commit(UsersMutationTypes.SET_USER, data);
-      }, 1000);
+        await axios.get('users/whoami').then((data) => {
+          let viewedUser: User = {username: data.data.username, full_name: data.data.full_name};
+          console.debug('viewedUser: ' + JSON.stringify(viewedUser));
+          commit(UsersMutationTypes.SET_USER, viewedUser);
+
+        });
+      }, 500);
+          console.debug('user set ');
     });
   },
   async [UsersActionTypes.LOGOUT]({ commit }: AugmentedActionContext) {
@@ -71,7 +81,7 @@ export const actions: ActionTree<State, RootState> & Actions = {
       setTimeout(async () => {
         console.debug('LOGOUT');
         commit(UsersMutationTypes.SET_USER, null);
-      }, 1000);
+      }, 500);
     });
   },
   async [UsersActionTypes.DELETEUSER]({ commit }: AugmentedActionContext, payload: any) {
@@ -80,7 +90,7 @@ export const actions: ActionTree<State, RootState> & Actions = {
         console.debug('DELETEUSER');
         await axios.delete('user/${payload}');
         commit(UsersMutationTypes.SET_USER);
-      }, 1000);
+      }, 500);
     });
   }
 }

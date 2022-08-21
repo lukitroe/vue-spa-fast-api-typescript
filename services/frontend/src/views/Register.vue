@@ -2,47 +2,61 @@
     <div class="mb-3">
         <label for="username" class="form-label">Username:</label>
         <input type="text" name="username" v-model="username" class="form-control" />
-        <div>Username: {{ username }}</div>
     </div>
     <div class="mb-3">
         <label for="full_name" class="form-label">Full Name:</label>
         <input type="text" name="full_name" v-model="full_name" class="form-control" />
-        <div>full_name: {{ full_name }}</div>
     </div>
     <div class="mb-3">
         <label for="password" class="form-label">Password:</label>
         <input type="password" name="password" v-model="password" class="form-control" />
-        <div>password: {{ password }}</div>
     </div>
     <button type="submit" class="btn btn-primary" @click="submit">Register</button>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
+<script lang="ts">
+import { ref, defineComponent } from 'vue'
 import { useStore } from '../store/index';
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from '../router/index';
 import { UsersActionTypes } from '../store/modules/users/action-types';
 
-const store = useStore();
+export default defineComponent({
+    name: 'Register',
+    setup() {
+        const store = useStore();
 
-const router = useRouter();
-// const route = useRoute();
+        const router = useRouter();
 
-const username = ref('');
-const full_name = ref('');
-const password = ref('');
+        const username = ref('');
+        const full_name = ref('');
+        const password = ref('');
 
-async function submit() {
-    try {
-        await store.dispatch(UsersActionTypes.REGISTER, {
-            "username": username.value,
-            "full_name": full_name.value,
-            "password": password.value
-        });
-        router.push('Dashboard');
-    } catch (error) {
-        console.error('fetchDocuments', error);
+        const submit = () => {
+            console.log("oiasudfoiasdufoi");
+            store.dispatch(UsersActionTypes.REGISTER, {
+                "username": username.value,
+                "full_name": full_name.value,
+                "password": password.value
+            })
+            .then((res) => {
+                console.log("res: " + JSON.stringify(res));
+                router.push('/dashboard');
+            })
+            //.catch((reason) => {
+            //     console.log("werweroaisd: " + JSON.stringify(reason));
+            // })
+            //.finally(() => {
+            //     console.log("ererer");
+            // });
+            console.log("aosifua9weufoaijf");
+        }
+
+        return {
+            submit,
+            username,
+            full_name,
+            password
+        };
     }
-}
-
+})
 </script>

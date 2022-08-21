@@ -1,4 +1,9 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import {
+  createRouter,
+  createWebHistory,
+  RouteRecordRaw,
+  Router
+} from 'vue-router';
 
 import { useStore } from '../store/index';
 
@@ -45,44 +50,48 @@ const routes: RouteRecordRaw[] = [
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,
-    meta: {requiresAuth: true},
+    meta: { requiresAuth: true },
   },
   {
     path: '/profile',
     name: 'Profile',
     component: Profile,
-    meta: {requiresAuth: true},
+    meta: { requiresAuth: true },
   },
   {
     path: '/note/:id',
     name: 'Note',
     component: Note,
-    meta: {requiresAuth: true}
+    meta: { requiresAuth: true }
   },
   {
     path: '/note/:id',
     name: 'EditNote',
     component: EditNote,
-    meta: {requiresAuth: true}
+    meta: { requiresAuth: true }
   }
 ]
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
-});
+let router: Router;
 
-// NEW
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.isAuthenticated) {
-      next();
-      return;
-    }
-    next('/login');
-  } else {
-    next();
+export function useRouter() {
+  if (!router) {
+    router = createRouter({
+      history: createWebHistory(import.meta.env.BASE_URL),
+      routes,
+    });
+
+    router.beforeEach((to, from, next) => {
+      if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (store.getters.isAuthenticated) {
+          next();
+          return;
+        }
+        next('/login');
+      } else {
+        next();
+      }
+    });
   }
-});
-
-export default router;
+  return router;
+}

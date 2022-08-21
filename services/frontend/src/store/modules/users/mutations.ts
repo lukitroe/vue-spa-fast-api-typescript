@@ -11,6 +11,7 @@ export type Mutations<S = State> = {
 
 export const mutations: MutationTree<State> & Mutations = {
   [UsersMutationTypes.SET_USER](state: State, user: User) {
+    console.debug("SET_USER: " + JSON.stringify(user));
     state.data = user;
   },
 };

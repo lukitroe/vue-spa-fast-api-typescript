@@ -1,17 +1,19 @@
 <template>
-    <div class="mb-3">
-        <label for="username" class="form-label">Username:</label>
-        <input type="text" name="username" v-model="username" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label for="full_name" class="form-label">Full Name:</label>
-        <input type="text" name="full_name" v-model="full_name" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Password:</label>
-        <input type="password" name="password" v-model="password" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary" @click="submit">Register</button>
+    <form @submit.prevent="submit">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" name="username" v-model="username" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="full_name" class="form-label">Full Name:</label>
+            <input type="text" name="full_name" v-model="full_name" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" name="password" v-model="password" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
 </template>
 
 <script lang="ts">
@@ -31,24 +33,17 @@ export default defineComponent({
         const full_name = ref('');
         const password = ref('');
 
-        const submit = () => {
-            console.log("oiasudfoiasdufoi");
-            store.dispatch(UsersActionTypes.REGISTER, {
-                "username": username.value,
-                "full_name": full_name.value,
-                "password": password.value
-            })
-            .then((res) => {
-                console.log("res: " + JSON.stringify(res));
-                router.push('/dashboard');
-            })
-            //.catch((reason) => {
-            //     console.log("werweroaisd: " + JSON.stringify(reason));
-            // })
-            //.finally(() => {
-            //     console.log("ererer");
-            // });
-            console.log("aosifua9weufoaijf");
+        const submit = async () => {
+            try {
+                await store.dispatch(UsersActionTypes.REGISTER, {
+                    "username": username.value,
+                    "full_name": full_name.value,
+                    "password": password.value
+                })
+            } catch (err) {
+                console.log("err: " + JSON.stringify(err));
+            }
+            router.push({ name: 'Dashboard' });
         }
 
         return {
@@ -58,5 +53,5 @@ export default defineComponent({
             password
         };
     }
-})
+});
 </script>

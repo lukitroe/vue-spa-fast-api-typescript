@@ -29,68 +29,56 @@ type AugmentedActionContext = Omit<ActionContext<State, RootState>, "commit" | "
   }
 
 export interface Actions {
-  [UsersActionTypes.REGISTER]({ dispatch }: AugmentedActionContext, payload: any): Promise<boolean>,
-  [UsersActionTypes.LOGIN]({ dispatch }: AugmentedActionContext, payload: any): Promise<boolean>,
-  [UsersActionTypes.VIEWME]({ commit }: AugmentedActionContext): Promise<boolean>,
-  [UsersActionTypes.LOGOUT]({ commit }: AugmentedActionContext): Promise<boolean>,
-  [UsersActionTypes.DELETEUSER]({ commit }: AugmentedActionContext, payload: any): Promise<boolean>
+  [UsersActionTypes.REGISTER]({ dispatch }: AugmentedActionContext, payload: any): void,
+  [UsersActionTypes.LOGIN]({ dispatch }: AugmentedActionContext, payload: any): void,
+  [UsersActionTypes.VIEWME]({ commit }: AugmentedActionContext): void,
+  [UsersActionTypes.LOGOUT]({ commit }: AugmentedActionContext): void,
+  [UsersActionTypes.DELETEUSER]({ commit }: AugmentedActionContext, payload: any): void
 }
 
 export const actions: ActionTree<State, RootState> & Actions = {
   async [UsersActionTypes.REGISTER]({ dispatch }: AugmentedActionContext, payload: any) {
-    return new Promise(() => {
-      setTimeout(async () => {
-        console.debug('REGISTER payload: ' + JSON.stringify(payload));
-        await axios.post('register', payload).then((res) => {
-          let Userdata = new FormData();
-          Userdata.append('username', payload.username);
-          Userdata.append('password', payload.password)
-          dispatch(UsersActionTypes.LOGIN, Userdata);
-        });
-      }, 500);
-      console.debug("REGISTER done");
-    });
+
+    // console.debug('REGISTER payload (1): ' + JSON.stringify(payload));
+
+    await axios.post('register', payload);
+    // console.debug('REGISTER payload (2)');
+
+    let Userdata = new FormData();
+    Userdata.append('username', payload.username);
+    Userdata.append('password', payload.password);
+
+    await dispatch(UsersActionTypes.LOGIN, Userdata);
+
+    // console.debug("REGISTER done");
+
   },
   async [UsersActionTypes.LOGIN]({ dispatch }: AugmentedActionContext, payload: any) {
-    return new Promise(() => {
-      setTimeout(async () => {
-        console.debug('LOGIN payload: ' + JSON.stringify(payload));
-        await axios.post('login', payload).then((res) => {
-          dispatch(UsersActionTypes.VIEWME);
-        });
-      }, 500);
-      console.debug("LOGIN done");
-    });
+
+    // console.debug('LOGIN payload: ' + JSON.stringify(payload));
+    await axios.post('login', payload);
+    // console.debug('LOGIN payload(2) ');
+    await dispatch(UsersActionTypes.VIEWME);
+    // console.debug('LOGIN payload(3) ');
   },
   async [UsersActionTypes.VIEWME]({ commit }) {
-    return new Promise(() => {
-      setTimeout(async () => {
-        console.debug('VIEWME');
-        await axios.get('users/whoami').then((data) => {
-          let viewedUser: User = {username: data.data.username, full_name: data.data.full_name};
-          console.debug('viewedUser: ' + JSON.stringify(viewedUser));
-          commit(UsersMutationTypes.SET_USER, viewedUser);
 
-        });
-      }, 500);
-          console.debug('user set ');
-    });
+    // console.debug('VIEWME');
+    let data = await axios.get('users/whoami');
+    // console.debug('VIEWME (2)');
+    let viewedUser: User = { username: data.data.username, full_name: data.data.full_name };
+    // console.debug('viewedUser: ' + JSON.stringify(viewedUser));
+    await commit(UsersMutationTypes.SET_USER, viewedUser);
+    // console.debug('VIEWME (3)');
+
   },
   async [UsersActionTypes.LOGOUT]({ commit }: AugmentedActionContext) {
-    return new Promise(() => {
-      setTimeout(async () => {
-        console.debug('LOGOUT');
-        commit(UsersMutationTypes.SET_USER, null);
-      }, 500);
-    });
+    // console.debug('LOGOUT');
+    await commit(UsersMutationTypes.SET_USER, null);
   },
   async [UsersActionTypes.DELETEUSER]({ commit }: AugmentedActionContext, payload: any) {
-    return new Promise(() => {
-      setTimeout(async () => {
-        console.debug('DELETEUSER');
-        await axios.delete('user/${payload}');
-        commit(UsersMutationTypes.SET_USER);
-      }, 500);
-    });
+    // console.debug('DELETEUSER');
+    await axios.delete('user/${payload}');
+    await commit(UsersMutationTypes.SET_USER);
   }
 }

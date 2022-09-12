@@ -1,9 +1,5 @@
 import { User } from '../../../@types';
 
-export type State = {
-  data: User | null;
-}
+export type State = { data: User | null };
 
-export const state: State = {
-  data: null
-};
+export const state: State = { data: null };

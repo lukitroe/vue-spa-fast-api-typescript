@@ -2,76 +2,99 @@
   <div>
     <section>
       <h1>Add new note</h1>
-      <hr/><br/>
+      <hr /><br />
 
-      <form @submit.prevent="submit">
+      <form @submit.prevent="formSubmit">
         <div class="mb-3">
           <label for="title" class="form-label">Title:</label>
-          <input type="text" name="title" v-model="form.title" class="form-control" />
+          <input type="text" name="title" v-model="title" class="form-control" />
         </div>
         <div class="mb-3">
           <label for="content" class="form-label">Content:</label>
-          <textarea
-            name="content"
-            v-model="form.content"
-            class="form-control"
-          ></textarea>
+          <textarea name="content" v-model="content" class="form-control"></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </section>
 
-    <br/><br/>
+    <br /><br />
 
     <section>
       <h1>Notes</h1>
-      <hr/><br/>
+      <hr /><br />
 
-      <div v-if="notes.length">
+      <!-- <div v-if="notes.length">
         <div v-for="note in notes" :key="note.id" class="notes">
           <div class="card" style="width: 18rem;">
             <div class="card-body">
               <ul>
-                <li><strong>Note Title:</strong> {{ note.title }}</li>
-                <li><strong>Author:</strong> {{ note.author.username }}</li>
-                <li><router-link :to="{name: 'Note', params:{id: note.id}}">View</router-link></li>
+                <li><strong>Note Title:</strong> {{  note.title  }}</li>
+                <li><strong>Author:</strong> {{  note.author.username  }}</li>
+                <li>
+                  <router-link :to="{ name: 'Note', params: { id: note.id } }">View</router-link>
+                </li>
               </ul>
             </div>
           </div>
-          <br/>
+          <br />
         </div>
       </div>
 
       <div v-else>
         <p>Nothing to see. Check back later.</p>
-      </div>
+      </div> -->
     </section>
   </div>
 </template>
 
-<script>
-import { mapGetters, mapActions } from 'vuex';
-export default {
+<script lang="ts">
+import { ref, defineComponent, onMounted, computed } from 'vue'
+import { useStore } from '../store/index';
+import { useRouter } from '../router/index';
+import { NotesActionTypes } from '../store/modules/notes/action-types';
+import { stringifyQuery } from 'vue-router';
+
+export default defineComponent({
   name: 'Dashboard',
-  data() {
+  setup() {
+    const store = useStore();
+
+    const title = ref('');
+    const content = ref('');
+
+    const notes = computed(() => store.getters.getDocuments);
+
+    onMounted(async () => {
+      await store.dispatch(NotesActionTypes.GET_NOTES);
+    })
+
+    const formSubmit = async () => {
+      try {
+        // await store.dispatch(UsersActionTypes.REGISTER, {
+        //   "username": username.value,
+        //   "full_name": full_name.value,
+        //   "password": password.value
+        // })
+      } catch (err) {
+        console.log("err: " + JSON.stringify(err));
+      }
+    }
+
     return {
-      form: {
-        title: '',
-        content: '',
-      },
+      title,
+      content,
+      formSubmit,
+      notes
     };
   },
-  created: function() {
-    return this.$store.dispatch('getNotes');
-  },
   computed: {
-    ...mapGetters({ notes: 'stateNotes'}),
+    // ...mapGetters({ notes: 'stateNotes'}),
   },
   methods: {
-    ...mapActions(['createNote']),
-    async submit() {
-      await this.createNote(this.form);
-    },
+    // ...mapActions(['createNote']),
+    // async submit() {
+    //   await this.createNote(this.form);
+    // },
   },
-};
+});
 </script>

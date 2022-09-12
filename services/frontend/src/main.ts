@@ -19,7 +19,7 @@ axios.interceptors.response.use(undefined, function (error) {
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       store.dispatch(UsersActionTypes.LOGOUT);
-      return router.push('/login')
+      return router.push({name: 'Login'})
     }
   }
 });

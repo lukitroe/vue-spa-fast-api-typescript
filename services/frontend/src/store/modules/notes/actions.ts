@@ -10,15 +10,26 @@ import { NotesActionTypes } from './action-types';
 
 import axios from 'axios';
 
-type AugmentedActionContext = {
+type AugmentedActionContext = Omit<ActionContext<State, RootState>, "commit" | "dispatch">
+& {
   commit<K extends keyof Mutations>(
     key: K,
-    payload: Parameters<Mutations[K]>[1],
+    payload?: Parameters<Mutations[K]>[1],
   ): ReturnType<Mutations[K]>;
-} & Omit<ActionContext<State, RootState>, 'commit'>
+} & {
+  dispatch<K extends keyof Actions>(
+    key: K,
+    payload?: Parameters<Actions[K]>[1]
+  ): ReturnType<Actions[K]>;
+}
 
 export interface Actions {
-  [NotesActionTypes.FETCH_NOTES]({ commit }: AugmentedActionContext): Promise<boolean>;
+  [NotesActionTypes.FETCH_NOTES]({ commit }: AugmentedActionContext): void;
+  [NotesActionTypes.CREATE_NOTE]({ dispatch }: AugmentedActionContext): void;
+  [NotesActionTypes.GET_NOTES]({ commit }: AugmentedActionContext): void;
+  [NotesActionTypes.VIEW_NOTE]({ commit }: AugmentedActionContext): void;
+  [NotesActionTypes.UPDATE_NOTE]({ commit }: AugmentedActionContext): void;
+  [NotesActionTypes.DELETE_NOTE]({ commit }: AugmentedActionContext): void;
 }
 
 export const actions: ActionTree<State, RootState> & Actions = {
@@ -42,13 +53,19 @@ export const actions: ActionTree<State, RootState> & Actions = {
     });
   },
   async [NotesActionTypes.GET_NOTES]({ commit }) {
-    return new Promise(() => {
-      setTimeout(() => {
+    
         console.debug('GET_NOTES');
-        // axios.post();
-        // commit(NotesMutationTypes.SET_DATA, data);
-        return true;
-      }, 500);
-    });
+        let {data} = await axios.get('notes');
+        await commit(NotesMutationTypes.SET_DATA, data);
+
   },
+  async [NotesActionTypes.VIEW_NOTE]({ commit }) {
+    console.log("dummy VIEW_NOTE");
+  },
+  async [NotesActionTypes.UPDATE_NOTE]({ commit }) {
+    console.log("dummy UPDATE_NOTE");
+  },
+  async [NotesActionTypes.DELETE_NOTE]({ commit }) {
+    console.log("dummy DELETE_NOTE");
+  }
 };

@@ -25,7 +25,7 @@ type AugmentedActionContext = Omit<ActionContext<State, RootState>, "commit" | "
 
 export interface Actions {
   [NotesActionTypes.FETCH_NOTES]({ commit }: AugmentedActionContext): void;
-  [NotesActionTypes.CREATE_NOTE]({ dispatch }: AugmentedActionContext): void;
+  [NotesActionTypes.CREATE_NOTE]({ dispatch }: AugmentedActionContext, payload:any): void;
   [NotesActionTypes.GET_NOTES]({ commit }: AugmentedActionContext): void;
   [NotesActionTypes.VIEW_NOTE]({ commit }: AugmentedActionContext): void;
   [NotesActionTypes.UPDATE_NOTE]({ commit }: AugmentedActionContext): void;
@@ -42,15 +42,11 @@ export const actions: ActionTree<State, RootState> & Actions = {
       }, 500);
     });
   },
-  async [NotesActionTypes.CREATE_NOTE]({ dispatch }) {
-    return new Promise(() => {
-      setTimeout(() => {
+  async [NotesActionTypes.CREATE_NOTE]({ dispatch }, payload: any) {
+    
         console.debug('CREATE_NOTE');
-        // axios.post();
-        dispatch(NotesActionTypes.GET_NOTES)
-        return true;
-      }, 500);
-    });
+        let {data} = await axios.post('notes', payload);
+        await dispatch(NotesActionTypes.GET_NOTES);
   },
   async [NotesActionTypes.GET_NOTES]({ commit }) {
     

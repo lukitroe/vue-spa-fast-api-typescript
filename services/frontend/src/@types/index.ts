@@ -1,4 +1,8 @@
-declare type NotesDetails = {};
+declare type NotesDetails = {
+  title:string,
+  content:string,
+  creator:string
+};
 
 export type NotesDocuments = {
   readonly notes: Array<NotesDetails> | null;

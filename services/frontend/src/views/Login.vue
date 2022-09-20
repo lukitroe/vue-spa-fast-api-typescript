@@ -14,27 +14,40 @@
   </section>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
+<script lang="ts">
+import { ref, defineComponent  } from 'vue'
 import { useStore } from '../store/index';
-import {useRouter} from '../router/index';
+import { useRouter } from '../router/index';
 import { UsersActionTypes } from '../store/modules/users/action-types';
 
-const store = useStore();
-const router = useRouter();
+export default defineComponent({
+  name: 'Login',
+  setup() {
 
-const username = ref('');
-const password = ref('');
+    const store = useStore();
+    const router = useRouter();
 
-async function submit() {
-  try {
-    await store.dispatch(UsersActionTypes.LOGIN, {
-      "username": username.value,
-      "password": password.value
-    });
-    router.push('/dashboard');
-  } catch (error) {
-    console.error('error in login', error);
+    const username = ref('');
+    const password = ref('');
+
+    const submit = async () => {
+      try {
+        await store.dispatch(UsersActionTypes.LOGIN, {
+          "username": username.value,
+          "password": password.value
+        });
+        router.push({ name: 'Dashboard' });
+      } catch (error) {
+        console.error('error in login', error);
+      }
+    }
+
+    return { 
+      submit, 
+      username, 
+      password 
+    };
   }
-}
+});
+
 </script>

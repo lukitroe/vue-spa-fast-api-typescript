@@ -31,15 +31,15 @@ export default defineComponent({
     const password = ref('');
 
     const submit = async () => {
+      const UserLoginData = new FormData();
+      UserLoginData.append('username', username.value);
+      UserLoginData.append('password', password.value);
       try {
-        await store.dispatch(UsersActionTypes.LOGIN, {
-          "username": username.value,
-          "password": password.value
-        });
-        router.push({ name: 'Dashboard' });
+        await store.dispatch(UsersActionTypes.LOGIN, UserLoginData);
       } catch (error) {
         console.error('error in login', error);
       }
+      router.push({ name: 'Dashboard' });
     }
 
     return { 

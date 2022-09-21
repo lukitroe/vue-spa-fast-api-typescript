@@ -27,7 +27,7 @@ export interface Actions {
   [NotesActionTypes.FETCH_NOTES]({ commit }: AugmentedActionContext): void;
   [NotesActionTypes.CREATE_NOTE]({ dispatch }: AugmentedActionContext, payload:any): void;
   [NotesActionTypes.GET_NOTES]({ commit }: AugmentedActionContext): void;
-  [NotesActionTypes.VIEW_NOTE]({ commit }: AugmentedActionContext): void;
+  [NotesActionTypes.VIEW_NOTE]({ commit }: AugmentedActionContext, id:string): void;
   [NotesActionTypes.UPDATE_NOTE]({ commit }: AugmentedActionContext): void;
   [NotesActionTypes.DELETE_NOTE]({ commit }: AugmentedActionContext): void;
 }
@@ -55,8 +55,10 @@ export const actions: ActionTree<State, RootState> & Actions = {
         await commit(NotesMutationTypes.SET_DATA, data);
 
   },
-  async [NotesActionTypes.VIEW_NOTE]({ commit }) {
+  async [NotesActionTypes.VIEW_NOTE]({ commit }, id:string) {
     console.log("dummy VIEW_NOTE");
+    let {data} = await axios.get(`note/${id}`);
+    await commit(NotesMutationTypes.SET_NOTE, data);
   },
   async [NotesActionTypes.UPDATE_NOTE]({ commit }) {
     console.log("dummy UPDATE_NOTE");

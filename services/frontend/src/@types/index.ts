@@ -8,6 +8,10 @@ export type NotesDocuments = {
   readonly notes: Array<NotesDetails> | null;
 };
 
+export type NoteDocument = {
+  readonly note: NotesDetails | null;
+}
+
 
 export type User = {
     username: string,

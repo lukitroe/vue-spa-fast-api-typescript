@@ -50,9 +50,7 @@
 <script lang="ts">
 import { ref, defineComponent, onMounted, computed } from 'vue'
 import { useStore } from '../store/index';
-import { useRouter } from '../router/index';
 import { NotesActionTypes } from '../store/modules/notes/action-types';
-import { stringifyQuery } from 'vue-router';
 
 export default defineComponent({
   name: 'Dashboard',
@@ -82,15 +80,6 @@ export default defineComponent({
       formSubmit,
       notes
     };
-  },
-  computed: {
-    // ...mapGetters({ notes: 'stateNotes'}),
-  },
-  methods: {
-    // ...mapActions(['createNote']),
-    // async submit() {
-    //   await this.createNote(this.form);
-    // },
   },
 });
 </script>

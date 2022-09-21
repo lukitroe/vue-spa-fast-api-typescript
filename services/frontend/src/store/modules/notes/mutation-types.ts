@@ -2,5 +2,6 @@
 // eslint-disable-next-line no-shadow
 export enum NotesMutationTypes {
     SET_DATA = 'SET_DATA',
+    SET_NOTE = 'SET_NOTE',
   }
   

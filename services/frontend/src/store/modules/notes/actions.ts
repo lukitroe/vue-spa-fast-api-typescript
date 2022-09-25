@@ -29,7 +29,7 @@ export interface Actions {
   [NotesActionTypes.GET_NOTES]({ commit }: AugmentedActionContext): void;
   [NotesActionTypes.VIEW_NOTE]({ commit }: AugmentedActionContext, id:string): void;
   [NotesActionTypes.UPDATE_NOTE]({ commit }: AugmentedActionContext): void;
-  [NotesActionTypes.DELETE_NOTE]({ commit }: AugmentedActionContext): void;
+  [NotesActionTypes.DELETE_NOTE]({ commit }: AugmentedActionContext, id:string): void;
 }
 
 export const actions: ActionTree<State, RootState> & Actions = {
@@ -63,7 +63,8 @@ export const actions: ActionTree<State, RootState> & Actions = {
   async [NotesActionTypes.UPDATE_NOTE]({ commit }) {
     console.log("dummy UPDATE_NOTE");
   },
-  async [NotesActionTypes.DELETE_NOTE]({ commit }) {
-    console.log("dummy DELETE_NOTE");
+  async [NotesActionTypes.DELETE_NOTE]({ commit }, id:string) {
+    await axios.delete(`note/${id}`);
+    // console.log("DELETE_NOTE done");d
   }
 };

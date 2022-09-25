@@ -11,7 +11,7 @@ import { State } from './state';
 import { Mutations } from './mutations';
 import { UsersMutationTypes } from './mutation-types';
 import { UsersActionTypes } from './action-types';
-import { User } from '../../../@types';
+import { NoteDocument, User } from '../../../@types';
 
 import axios from 'axios';
 
@@ -66,7 +66,7 @@ export const actions: ActionTree<State, RootState> & Actions = {
     // console.debug('VIEWME');
     let data = await axios.get('users/whoami');
     // console.debug('VIEWME (2)');
-    let viewedUser: User = { username: data.data.username, full_name: data.data.full_name };
+    let viewedUser: User = { id: data.data.id, username: data.data.username, full_name: data.data.full_name };
     // console.debug('viewedUser: ' + JSON.stringify(viewedUser));
     await commit(UsersMutationTypes.SET_USER, viewedUser);
     // console.debug('VIEWME (3)');

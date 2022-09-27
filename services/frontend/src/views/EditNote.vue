@@ -1,69 +1,62 @@
 <template>
   <section>
     <h1>Edit note</h1>
-    <hr/><br/>
+    <hr /><br />
 
     <form @submit.prevent="submit">
       <div class="mb-3">
         <label for="title" class="form-label">Title:</label>
-        <input type="text" name="title" v-model="form.title" class="form-control" />
+        <input type="text" name="title" v-model="refTitle" class="form-control" />
       </div>
       <div class="mb-3">
         <label for="content" class="form-label">Content:</label>
-        <textarea
-          name="content"
-          v-model="form.content"
-          class="form-control"
-        ></textarea>
+        <textarea name="content" v-model="refContent" class="form-control"></textarea>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </section>
 </template>
 
-<script>
-import { mapGetters, mapActions } from 'vuex';
-export default {
+<script lang="ts">
+import { ref, defineComponent, onMounted, computed, Ref, ComputedRef } from 'vue'
+import { useRoute } from 'vue-router'
+import { useStore } from '../store/index';
+import { useRouter } from '../router/index';
+import { NotesActionTypes } from '../store/modules/notes/action-types';
+import { NoteDocument, User } from '../@types';
+
+export default defineComponent({
   name: 'EditNote',
-  props: ['id'],
-  data() {
-    return {
-      form: {
-        title: '',
-        content: '',
-      },
-    };
-  },
-  created: function() {
-    this.GetNote();
-  },
-  computed: {
-    ...mapGetters({ note: 'stateNote' }),
-  },
-  methods: {
-    ...mapActions(['updateNote', 'viewNote']),
-    async submit() {
-    try {
-      let note = {
-        id: this.id,
-        form: this.form,
-      };
-      await this.updateNote(note);
-      this.$router.push({name: 'Note', params:{id: this.note.id}});
-    } catch (error) {
-      console.log(error);
-    }
-    },
-    async GetNote() {
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+
+    const currRoute = useRoute();
+    const noteId: string = currRoute.params.id as string;
+
+    const note: ComputedRef<NoteDocument | null> = computed(() => store.getters.getNote);
+      
+    const refTitle:Ref<string> = ref((note.value)?.title);
+    const refContent:Ref<string> = ref((note.value)?.content);
+
+    onMounted(async () => {
+      await store.dispatch(NotesActionTypes.VIEW_NOTE, noteId);
+    });
+
+    const submit = async () => {
       try {
-        await this.viewNote(this.id);
-        this.form.title = this.note.title;
-        this.form.content = this.note.content;
-      } catch (error) {
-        console.error(error);
-        this.$router.push('/dashboard');
+        await store.dispatch(NotesActionTypes.UPDATE_NOTE, {id: noteId, title: refTitle.value, content: refContent.value})
+      } catch (err) {
+        console.log("err: " + JSON.stringify(err));
       }
+      router.push({ name: 'Note', params: { id: noteId } });
     }
-  },
-};
+
+    return {
+      submit,
+      refTitle,
+      refContent
+    }
+  }
+});
 </script>

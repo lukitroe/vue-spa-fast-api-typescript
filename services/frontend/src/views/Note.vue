@@ -15,7 +15,7 @@
 
 
 <script lang="ts">
-import { ref, defineComponent, onMounted, computed, ComputedRef } from 'vue'
+import { defineComponent, onMounted, computed, ComputedRef } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from '../store/index';
 import { useRouter } from '../router/index';
